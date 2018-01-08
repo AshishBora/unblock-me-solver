@@ -21,7 +21,7 @@ The solver also automatically skips ads by using a timeout to terminate BFS and 
 
 ### Instructions
 
-- Follow the setup here https://developer.android.com/studio/command-line/adb.html and make sure you can relay simple touch/swipe commands to your Android device.
+- Follow the setup [here](https://developer.android.com/studio/command-line/adb.html) and make sure you can relay simple touch/swipe commands to your Android device.
 - Open the game on the phone
 - On the terminal, run
 
