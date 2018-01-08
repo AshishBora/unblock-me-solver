@@ -4,12 +4,12 @@ This repository provides a solver for the [Unblock Me](https://play.google.com/s
 
 ### Method
 
-We will connect a computer and relay commands to the Android phone using the [Android Debug Bridge](https://developer.android.com/studio/command-line/adb.html) (ADB)
+We will connect a computer to the Android device and relay commands using the [Android Debug Bridge](https://developer.android.com/studio/command-line/adb.html) (ADB)
 
-The steps are: 
- - Take a screenshot of the phone
- - Transfer the photo to the computer
- - Image processing to obtain the start state
+The steps performed by the script are: 
+ - Take a screenshot on the phone
+ - Transfer it to the computer
+ - Process the image to obtain the start state
  - Breadth First Search (BFS) to find the solution
  - Obtain swipe commands and relay them to the phone
 
@@ -20,7 +20,7 @@ The steps are:
 
 ### Instructions
 
-- Follow the setup [here](https://developer.android.com/studio/command-line/adb.html) and make sure you can relay simple touch/swipe commands to your Android device.
+- Follow the steps [here](https://developer.android.com/studio/command-line/adb.html) and make sure you can relay simple touch/swipe commands to your Android device.
 - Open the game on the phone
 - On the terminal, run
 
