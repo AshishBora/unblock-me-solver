@@ -1,8 +1,6 @@
 # unblock-me-solver
 ---
-This repository provides a solver for the [Unblock Me](https://play.google.com/store/apps/details?id=com.kiragames.unblockmefree&hl=en) puzzle game. See the solver in action in this video!
-
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/7-QurCubPWM/0.jpg)](https://www.youtube.com/watch?v=7-QurCubPWM)
+This repository provides a solver for the [Unblock Me](https://play.google.com/store/apps/details?id=com.kiragames.unblockmefree&hl=en) puzzle game. See the solver in action in this [video](https://www.youtube.com/watch?v=7-QurCubPWM)!
 
 ### Method
 
