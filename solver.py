@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # from sklearn.cluster import KMeans
-# import numpy as np
 
 
 def read_image():
@@ -82,41 +81,31 @@ def pprint(string):
 
 def get_moves(node):
     moves = []
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+    dir_map = {
+        (0, 1): ['h', 'r'],
+        (0, -1): ['h', 'r'],
+        (1, 0): 'v',
+        (-1, 0): 'v',
+    }
+
+    empty = []
     for j in range(6):
         for i in range(6):
             if node[j][i] == 'e':
-#                 print j, i
-                directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+                empty.append((j, i))
 
-                dir_map = {
-                    (0, 1): ['h', 'r'],
-                    (0, -1): ['h', 'r'],
-                    (1, 0): 'v',
-                    (-1, 0): 'v',
-                }
-
-                for dy, dx in directions:
-                    y, x = j, i
-
-                    while True:
-                        y, x = y + dy, x + dx
-
-                        cond1 = (0 <= x < 6) and (0 <= y < 6)
-                        if not cond1:
-                            break
-
-                        if node[y][x] != 'e':
-#                             print '    ', y, x
-                            if node[y][x][0] in dir_map[(dy, dx)]:
-                                move = (j, i, (j-y, i-x))
-                                moves.append(move)
-                            break
-
-                # for (y, x) in neighbors:
-                #     direc = (j-y, i-x)
-                #     if node[y][x][0] in dir_map[direc]:
-                #         move = (j, i, direc)
-                #         moves.append(move)
+    for j, i in empty:
+        for dy, dx in directions:
+            y, x = j + dy, i + dx
+            while (0 <= x < 6) and (0 <= y < 6):
+                if node[y][x] != 'e':
+                    if node[y][x][0] in dir_map[(dy, dx)]:
+                        move = (j, i, (j-y, i-x))
+                        moves.append(move)
+                    break
+                y, x = y + dy, x + dx
 
     return moves
 
@@ -153,6 +142,7 @@ def check_solved(node):
 
 class HashError(Exception):
     pass
+
 
 def hashed(node):
     try:
@@ -250,7 +240,7 @@ def get_wall_grids(image, X_vals, Y_vals):
 
 
 def validate_grid(grid):
-    num_red = sum([float(elem==2) for row in grid for elem in row])
+    num_red = sum([float(elem == 2) for row in grid for elem in row])
     return num_red == 2
 
 
