@@ -1,2 +1,6 @@
 .DS_Store
 .ipynb_checkpoints/
+
+screencap.png
+*.pyc
+unblock_log.pkl

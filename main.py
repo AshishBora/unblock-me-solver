@@ -4,7 +4,7 @@ import os
 import time
 import cPickle as pickle
 
-import unblock_solver
+import solver
 
 
 class Rundata(object):
@@ -60,12 +60,12 @@ def solve():
     t1 = time.time()
 
     # print 'Getting initial configuration...',
-    start = unblock_solver.get_start_config()
+    start = solver.get_start_config()
     # print 'Done'
     t2 = time.time()
 
     # print 'Computing the moves...',
-    swipes = unblock_solver.solve(start)
+    swipes = solver.solve(start)
     if swipes is None:
         print 'Invalid grid'
         raise RuntimeError
@@ -111,7 +111,7 @@ def load_if_pickled(pkl_filepath):
 
 def main():
     transition_cmds = [
-        './adb shell input tap 383 1203',  # click on next (Challenge mode)
+        # './adb shell input tap 383 1203',  # click on next (Challenge mode)
         './adb shell input tap 549 156',  # tap outside to remove touch artifacts (example: developer options)
     ]
 
@@ -133,9 +133,9 @@ def main():
             log.append(rundata)
             new_in_log += 1
             time.sleep(4) # Time in seconds.
-        except unblock_solver.BFSError:
+        except solver.BFSError:
             run_cmds(back_cmds)
-        except unblock_solver.HashError:
+        except solver.HashError:
             run_cmds(back_cmds)
 
 if __name__ == '__main__':
