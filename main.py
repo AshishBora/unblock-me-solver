@@ -1,29 +1,11 @@
 # pylint: disable = C0103, C0111, C0301, R0913, R0903, R0914
 
-import os
+"""Solver for the Unblock Me game"""
+
 import time
-import cPickle as pickle
-
+import utils
 import solver
-
-
-class Rundata(object):
-    def __init__(self, start, swipes,
-                 screen_time, init_time, solve_time, run_time):
-        self.start = start
-        self.swipes = swipes
-        self.screen_time = screen_time
-        self.init_time = init_time
-        self.solve_time = solve_time
-        self.run_time = run_time
-
-    def pprint(self):
-        print 'time_spent: screen = {:06.2f}, init = {:06.2f}, solve = {:06.2f}, run = {:06.2f}'.format(
-            self.screen_time,
-            self.init_time,
-            self.solve_time,
-            self.run_time,
-        )
+import classes
 
 
 def get_cmd(move, pattern, X_vals, Y_vals):
@@ -41,26 +23,21 @@ def get_cmd(move, pattern, X_vals, Y_vals):
     return cmd
 
 
-def run_cmds(cmds):
-    for cmd in cmds:
-        # print cmd
-        os.system(cmd)
-
-
 def solve():
 
     t0 = time.time()
 
     # print 'Capturing and transferring screenshot...'
+    screen_filename = 'screen.png'
     screen_cmds = [
-        './adb shell screencap -p /sdcard/screencap.png',
-        './adb pull /sdcard/screencap.png',
+        './adb shell screencap -p /sdcard/{}'.format(screen_filename),
+        './adb pull /sdcard/{}'.format(screen_filename),
     ]
-    run_cmds(screen_cmds)
+    utils.run_cmds(screen_cmds)
     t1 = time.time()
 
     # print 'Getting initial configuration...',
-    start = solver.get_start_config()
+    start = solver.get_start_config(screen_filename)
     # print 'Done'
     t2 = time.time()
 
@@ -80,33 +57,18 @@ def solve():
     # print 'Done'
 
     # print 'Solving the puzzle...',
-    run_cmds([solution_cmd])
+    utils.run_cmds([solution_cmd])
     # print 'Done\n'
     t4 = time.time()
 
-    rundata = Rundata(start, swipes,
-                      t1 - t0,
-                      t2 - t1,
-                      t3 - t2,
-                      t4 - t3)
+    rundata = classes.Rundata(start, swipes,
+                              t1 - t0,
+                              t2 - t1,
+                              t3 - t2,
+                              t4 - t3)
     rundata.pprint()
 
     return rundata
-
-
-def save_to_pickle(log, pkl_filepath):
-    with open(pkl_filepath, 'wb') as pkl_file:
-        pickle.dump(log, pkl_file)
-
-
-def load_if_pickled(pkl_filepath):
-    """Load if the pickle file exists. Else return empty list"""
-    if os.path.isfile(pkl_filepath):
-        with open(pkl_filepath, 'rb') as pkl_file:
-            log = pickle.load(pkl_file)
-    else:
-        log = []
-    return log
 
 
 def main():
@@ -118,25 +80,23 @@ def main():
     # Thrice so that even if click on ads by mistake, we go back to the game
     back_cmds = ['./adb shell input keyevent 4' for _ in range(3)]
 
-    pkl_filepath = './unblock_log.pkl'
-    log = load_if_pickled(pkl_filepath)
+    pkl_filepath = './log.pkl'
+    log = utils.load_if_pickled(pkl_filepath)
 
     new_in_log = 0
     while True:
         if new_in_log >= 5:
-            save_to_pickle(log, pkl_filepath)
+            utils.save_to_pickle(log, pkl_filepath)
             new_in_log = 0
 
         try:
-            run_cmds(transition_cmds)
+            utils.run_cmds(transition_cmds)
             rundata = solve()
             log.append(rundata)
             new_in_log += 1
-            time.sleep(4) # Time in seconds.
-        except solver.BFSError:
-            run_cmds(back_cmds)
-        except solver.HashError:
-            run_cmds(back_cmds)
+            time.sleep(4)  # Time in seconds.
+        except (solver.BFSError, solver.HashError):
+            utils.run_cmds(back_cmds)
 
 if __name__ == '__main__':
     main()

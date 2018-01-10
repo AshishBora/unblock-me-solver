@@ -1,16 +1,17 @@
 # pylint: disable = C0103, C0111, C0301, R0913, R0903, R0914
 
+"""Core logic of the solver. Given an image, return the swipes to be performed."""
+
 import copy
 import collections
 import time
 import matplotlib.pyplot as plt
 import numpy as np
-
 # from sklearn.cluster import KMeans
 
 
-def read_image():
-    image = plt.imread('./screencap.png')
+def read_image(screen_filename):
+    image = plt.imread('./{}'.format(screen_filename))
     image = image[:, :, :3]
     # plt.imshow(im)
     return image
@@ -155,6 +156,10 @@ class BFSError(Exception):
     pass
 
 
+class TimeoutError(Exception):
+    pass
+
+
 def bfs(start):
     start_time = time.time()
     timeout = 60 # seconds
@@ -168,7 +173,7 @@ def bfs(start):
     while len(queue) > 0:
         if time.time() - start_time > timeout:
             print 'Could not find a path in {} seconds... terminating'.format(timeout)
-            break
+            raise TimeoutError
 
         node = queue.popleft()
         neighbors, moves = get_neighbors(node)
@@ -244,8 +249,8 @@ def validate_grid(grid):
     return num_red == 2
 
 
-def get_start_config():
-    image = read_image()
+def get_start_config(screen_filename):
+    image = read_image(screen_filename)
     X_vals = [127, 294, 461, 628, 795, 962]
     Y_vals = [633, 800, 967, 1134, 1301, 1468]
 
@@ -264,7 +269,6 @@ def get_start_config():
     #     print ''
 
     return start
-
 
 
 def solve(start):
